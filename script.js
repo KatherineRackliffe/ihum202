@@ -1,43 +1,51 @@
-alphabet = new Array("A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0");
-letter_count = 0;
-el = $("#loading");
-word = el.html().trim();
-finished = false;
+// Include jQuery (already referenced in the original code comment)
+// Ensure this script runs after the DOM is fully loaded
 
-el.html("");
-for (var i = 0; i < word.length; i++) {
-  el.append("<span>"+word.charAt(i)+"</span>");
-}
-
-setTimeout(write, 75);
-incrementer = setTimeout(inc, 1000);
-
-function write() {
-  for (var i = letter_count; i < word.length; i++) {
-    var c = Math.floor(Math.random() * 36);
-    $("span")[i].innerHTML = alphabet[c];
-  }
-  if (!finished) {
+$(document).ready(function () {
+    const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890".split("");
+    let letterCount = 0;
+    const el = $("#loading");
+    const word = el.text().trim();
+    let finished = false;
+  
+    el.html("");
+  
+    // Wrap each character in a span
+    for (let i = 0; i < word.length; i++) {
+      el.append(`<span>${word.charAt(i)}</span>`);
+    }
+  
+    // Start the write and increment processes
     setTimeout(write, 75);
-  }
-}
-
-function inc() {
-  $("span")[letter_count].innerHTML = word[letter_count];
-  $("span:eq("+letter_count+")").addClass("glow");
-  letter_count++;
-  if (letter_count >= word.length) {
-    finished = true;
-    setTimeout(reset, 1500);
-  } else {
-    setTimeout(inc, 1000);
-  }
-}
-
-function reset() {
-  letter_count = 0;
-  finished = false;
-  setTimeout(inc, 1000);
-  setTimeout(write, 75);
-  $("span").removeClass("glow");
-}
+    let incrementer = setTimeout(inc, 1000);
+  
+    function write() {
+      if (!finished) {
+        for (let i = letterCount; i < word.length; i++) {
+          const randomChar = alphabet[Math.floor(Math.random() * alphabet.length)];
+          el.find("span").eq(i).text(randomChar);
+        }
+        setTimeout(write, 75);
+      }
+    }
+  
+    function inc() {
+      if (letterCount < word.length) {
+        el.find("span").eq(letterCount).text(word[letterCount]).addClass("glow");
+        letterCount++;
+        setTimeout(inc, 1000);
+      } else {
+        finished = true;
+        setTimeout(reset, 1500);
+      }
+    }
+  
+    function reset() {
+      letterCount = 0;
+      finished = false;
+      el.find("span").removeClass("glow");
+      setTimeout(inc, 1000);
+      setTimeout(write, 75);
+    }
+  });
+  
